@@ -13,7 +13,7 @@ import {
   TableHeaderWrapper,
   TableHeaderInnerWrapper,
 } from "./TableStyledWrappers";
-import TableHeader from "./TableHeader";
+import TableHeader from "./header";
 import { Classes } from "@blueprintjs/core";
 import {
   ReactTableColumnProps,
