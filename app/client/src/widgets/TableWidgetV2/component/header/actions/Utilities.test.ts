@@ -1,9 +1,6 @@
-import { ColumnTypes } from "../constants";
-import {
-  sortTableFunction,
-  transformTableDataIntoCsv,
-} from "./CommonUtilities";
-import { TableColumnProps } from "./Constants";
+import { ColumnTypes } from "../../../constants";
+import { sortTableFunction, transformTableDataIntoCsv } from "./Utilities";
+import { TableColumnProps } from "../../Constants";
 
 describe("TableUtilities", () => {
   it("works as expected for sort table rows", () => {

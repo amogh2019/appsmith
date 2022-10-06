@@ -8,7 +8,7 @@ import {
   Operator,
   OperatorTypes,
 } from "./Constants";
-import { DropdownOption } from "./TableFilters";
+import { DropdownOption } from ".";
 import Button from "components/editorComponents/Button";
 import CascadeFields from "./CascadeFields";
 import {

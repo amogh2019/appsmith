@@ -9,20 +9,20 @@ import { Directions } from "utils/helpers";
 import { Colors } from "constants/Colors";
 import { ControlIcons } from "icons/ControlIcons";
 import { Skin } from "constants/DefaultTheme";
-import AutoToolTipComponent from "./cellComponents/AutoToolTipComponent";
+import AutoToolTipComponent from "../../../cellComponents/AutoToolTipComponent";
 import {
   OperatorTypes,
   Condition,
   Operator,
   ReactTableFilter,
-} from "./Constants";
+} from "../../../Constants";
 import { DropdownOption } from "./TableFilters";
-import { RenderOptionWrapper } from "./TableStyledWrappers";
+import { RenderOptionWrapper } from "../../../TableStyledWrappers";
 
 //TODO(abhinav): Fix this cross import between widgets
 import DatePickerComponent from "widgets/DatePickerWidget2/component";
 import { TimePrecision } from "widgets/DatePickerWidget2/constants";
-import { ColumnTypes, ReadOnlyColumnTypes } from "../constants";
+import { ColumnTypes, ReadOnlyColumnTypes } from "../../../../constants";
 
 const StyledRemoveIcon = styled(
   ControlIcons.CLOSE_CIRCLE_CONTROL as AnyStyledComponent,

@@ -7,11 +7,11 @@ import {
 } from "@blueprintjs/core";
 import { IconWrapper } from "constants/IconConstants";
 import { Colors } from "constants/Colors";
-import { ReactTableColumnProps } from "../Constants";
-import { TableIconWrapper } from "../TableStyledWrappers";
-import TableAction from "../TableAction";
+import { ReactTableColumnProps } from "../../Constants";
+import { TableIconWrapper } from "../../TableStyledWrappers";
+import TableAction from "./TableAction";
 import styled from "styled-components";
-import { transformTableDataIntoCsv } from "../CommonUtilities";
+import { transformTableDataIntoCsv } from "../../Utilities";
 import zipcelx from "zipcelx";
 import { ReactComponent as DownloadIcon } from "assets/icons/control/download-data-icon.svg";
 

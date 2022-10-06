@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { IconWrapper } from "constants/IconConstants";
 import { Colors } from "constants/Colors";
 import { TableIconWrapper } from "./TableStyledWrappers";
-import TableFilterPane from "./TableFilterPane";
+import TableFilterPane from "./FilterPane";
 
 import {
   ReactTableColumnProps,
