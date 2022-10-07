@@ -7,7 +7,7 @@ import {
   ReactTableFilter,
   Operator,
   OperatorTypes,
-} from "./Constants";
+} from "../../../Constants";
 import { DropdownOption } from ".";
 import Button from "components/editorComponents/Button";
 import CascadeFields from "./CascadeFields";

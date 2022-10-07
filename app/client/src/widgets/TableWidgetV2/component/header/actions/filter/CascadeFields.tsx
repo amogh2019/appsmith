@@ -16,7 +16,7 @@ import {
   Operator,
   ReactTableFilter,
 } from "../../../Constants";
-import { DropdownOption } from "./TableFilters";
+import { DropdownOption } from "./index";
 import { RenderOptionWrapper } from "../../../TableStyledWrappers";
 
 //TODO(abhinav): Fix this cross import between widgets

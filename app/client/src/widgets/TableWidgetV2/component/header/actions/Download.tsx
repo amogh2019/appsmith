@@ -11,7 +11,7 @@ import { ReactTableColumnProps } from "../../Constants";
 import { TableIconWrapper } from "../../TableStyledWrappers";
 import TableAction from "./TableAction";
 import styled from "styled-components";
-import { transformTableDataIntoCsv } from "../../Utilities";
+import { transformTableDataIntoCsv } from "./Utilities";
 import zipcelx from "zipcelx";
 import { ReactComponent as DownloadIcon } from "assets/icons/control/download-data-icon.svg";
 

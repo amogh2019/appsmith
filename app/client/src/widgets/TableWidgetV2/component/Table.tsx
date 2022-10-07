@@ -267,7 +267,7 @@ export function Table(props: TableProps) {
             >
               <TableHeader
                 accentColor={props.accentColor}
-                addNewRow
+                addNewRow={false}
                 applyFilter={props.applyFilter}
                 borderRadius={props.borderRadius}
                 boxShadow={props.boxShadow}

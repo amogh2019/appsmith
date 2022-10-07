@@ -5,5 +5,5 @@ export interface BannerPropType {
 }
 
 export function Banner(props: BannerPropType) {
-  return <div />;
+  return <div data-test={props.addNewRow} />;
 }

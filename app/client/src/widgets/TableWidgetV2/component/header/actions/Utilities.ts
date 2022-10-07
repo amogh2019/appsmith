@@ -1,7 +1,5 @@
-import { TableColumnProps } from "./Constants";
-import { isPlainObject, isNil, isString } from "lodash";
-import moment from "moment";
-import { ColumnTypes } from "../constants";
+import { TableColumnProps } from "../../Constants";
+import { isString } from "lodash";
 
 export const transformTableDataIntoCsv = (props: {
   columns: TableColumnProps[];
