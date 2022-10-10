@@ -1,9 +1,17 @@
 import React from "react";
+import { AddNewRowBanner, AddNewRowBannerType } from "./AddNewRowBanner";
 
-export interface BannerPropType {
-  addNewRow: boolean;
+export interface BannerPropType extends AddNewRowBannerType {
+  addNewRowInProgress: boolean;
 }
 
 export function Banner(props: BannerPropType) {
-  return <div data-test={props.addNewRow} />;
+  return props.addNewRowInProgress ? (
+    <AddNewRowBanner
+      accentColor={props.accentColor}
+      borderRadius={props.borderRadius}
+      boxShadow={props.boxShadow}
+      onAddNewRowAction={props.onAddNewRowAction}
+    />
+  ) : null;
 }

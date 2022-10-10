@@ -4,15 +4,7 @@ import { Colors } from "constants/Colors";
 import styled from "styled-components";
 import { ReactComponent as FilterIcon } from "assets/icons/control/filter-icon.svg";
 import { ReactComponent as DownloadIcon } from "assets/icons/control/download-data-icon.svg";
-
-interface TableActionProps {
-  selected: boolean;
-  selectMenu: (selected: boolean) => void;
-  className: string;
-  icon: string;
-  title: string;
-  titleColor?: string;
-}
+import { ReactComponent as AddIcon } from "assets/icons/control/add.svg";
 
 export const TableIconWrapper = styled.div<{
   selected?: boolean;
@@ -39,7 +31,17 @@ export const TableIconWrapper = styled.div<{
   }
 `;
 
-function TableAction(props: TableActionProps) {
+interface TableActionProps {
+  selected?: boolean;
+  selectMenu: (selected: boolean) => void;
+  className: string;
+  icon: string;
+  title: string;
+  titleColor?: string;
+  width?: number;
+}
+
+function ActionItem(props: TableActionProps) {
   const handleIconClick = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
       props.selectMenu(!props.selected);
@@ -54,6 +56,8 @@ function TableAction(props: TableActionProps) {
         return <DownloadIcon />;
       case "filter":
         return <FilterIcon />;
+      case "add":
+        return <AddIcon />;
     }
   };
 
@@ -67,7 +71,7 @@ function TableAction(props: TableActionProps) {
       <IconWrapper
         color={props.titleColor ? props.titleColor : Colors.GRAY}
         height={20}
-        width={20}
+        width={props.width || 20}
       >
         {getIcon()}
       </IconWrapper>
@@ -76,4 +80,4 @@ function TableAction(props: TableActionProps) {
   );
 }
 
-export default TableAction;
+export default ActionItem;

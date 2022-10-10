@@ -23,7 +23,11 @@ import {
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import Skeleton from "components/utils/Skeleton";
 import { noop, retryPromise } from "utils/AppsmithUtils";
-import { ReactTableFilter, OperatorTypes } from "../component/Constants";
+import {
+  ReactTableFilter,
+  OperatorTypes,
+  AddNewRowActions,
+} from "../component/Constants";
 import {
   ColumnTypes,
   COLUMN_MIN_WIDTH,
@@ -117,6 +121,8 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
       editableCell: defaultEditableCell,
       columnEditableCellValue: {},
       selectColumnFilterText: {},
+      addNewRowInProgress: false,
+      newRow: {},
     };
   }
 
@@ -823,10 +829,16 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
       componentWidth,
     } = this.getPaddingAdjustedDimensions();
 
+    if (this.props.addNewRowInProgress) {
+      transformedData.unshift(this.props.newRow);
+    }
+
     return (
       <Suspense fallback={<Skeleton />}>
         <ReactTableComponent
           accentColor={this.props.accentColor}
+          addNewRowInProgress={this.props.addNewRowInProgress}
+          allowAddNewRow={this.props.allowAddNewRow}
           applyFilter={this.updateFilters}
           borderRadius={this.props.borderRadius}
           boxShadow={this.props.boxShadow}
@@ -850,6 +862,8 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
           isVisibleSearch={isVisibleSearch}
           multiRowSelection={this.props.multiRowSelection}
           nextPageClick={this.handleNextPageClick}
+          onAddNewRow={this.handleAddNewRowClick}
+          onAddNewRowAction={this.handleAddNewRowAction}
           onBulkEditDiscard={this.onBulkEditDiscard}
           onBulkEditSave={this.onBulkEditSave}
           onRowClick={this.handleRowClick}
@@ -1246,7 +1260,6 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
       ) || props.cell.column.columnProperties;
     const isHidden = !column.isVisible;
     const {
-      filteredTableData = [],
       multiRowSelection,
       selectedRowIndex,
       selectedRowIndices,
@@ -1254,7 +1267,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
     } = this.props;
 
     const rowIndex: number = props.cell.row.index;
-    const row = filteredTableData[rowIndex];
+    const row = props.cell.row.values;
     const originalIndex = row[ORIGINAL_INDEX_KEY] ?? rowIndex;
 
     // cellProperties order or size does not change when filter/sorting/grouping is applied
@@ -1280,9 +1293,11 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
     const isColumnEditable =
       column.isEditable && isColumnTypeEditable(column.columnType);
     const alias = props.cell.column.columnProperties.alias;
+
     const isCellEditMode =
-      props.cell.column.alias === this.props.editableCell?.column &&
-      rowIndex === this.props.editableCell?.index;
+      (props.cell.column.alias === this.props.editableCell?.column &&
+        rowIndex === this.props.editableCell?.index) ||
+      (this.props.addNewRowInProgress && rowIndex === 0);
 
     switch (column.columnType) {
       case ColumnTypes.BUTTON:
@@ -1604,7 +1619,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
             isCellVisible={cellProperties.isCellVisible ?? true}
             isHidden={isHidden}
             onChange={() => {
-              const row = filteredTableData[rowIndex];
+              const row = props.cell.row.values;
               const cellValue = !props.cell.value;
 
               this.updateTransientTableData({
@@ -1648,7 +1663,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
             isCellVisible={cellProperties.isCellVisible ?? true}
             isHidden={isHidden}
             onChange={() => {
-              const row = filteredTableData[rowIndex];
+              const row = props.cell.row.values;
               const cellValue = !props.cell.value;
 
               this.updateTransientTableData({
@@ -1894,6 +1909,18 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
         },
       });
     }
+  };
+
+  handleAddNewRowClick = () => {
+    this.props.updateWidgetMetaProperty(
+      "addNewRowInProgress",
+      !this.props.addNewRowInProgress,
+    );
+    this.props.updateWidgetMetaProperty("pageNo", 1);
+  };
+
+  handleAddNewRowAction = (type: AddNewRowActions) => {
+    this.props.updateWidgetMetaProperty("addNewRowInProgress", false);
   };
 }
 

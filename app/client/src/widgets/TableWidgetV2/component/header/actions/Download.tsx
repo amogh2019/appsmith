@@ -9,7 +9,7 @@ import { IconWrapper } from "constants/IconConstants";
 import { Colors } from "constants/Colors";
 import { ReactTableColumnProps } from "../../Constants";
 import { TableIconWrapper } from "../../TableStyledWrappers";
-import TableAction from "./TableAction";
+import ActionItem from "./ActionItem";
 import styled from "styled-components";
 import { transformTableDataIntoCsv } from "./Utilities";
 import zipcelx from "zipcelx";
@@ -200,7 +200,7 @@ function TableDataDownload(props: TableDataDownloadProps) {
       onClose={handleCloseMenu}
       position={Position.BOTTOM}
     >
-      <TableAction
+      <ActionItem
         className="t--table-download-btn"
         icon="download"
         selectMenu={selectMenu}

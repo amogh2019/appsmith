@@ -3,12 +3,30 @@ import Actions, { ActionsProps } from "./actions";
 import { Banner, BannerPropType } from "./banner";
 
 function TableHeader(props: ActionsProps & BannerPropType) {
-  const { addNewRow, ...ActionProps } = props;
+  const {
+    accentColor,
+    addNewRowInProgress,
+    borderRadius,
+    boxShadow,
+    onAddNewRowAction,
+    ...ActionProps
+  } = props;
 
-  return addNewRow ? (
-    <Banner addNewRow={addNewRow} />
+  return addNewRowInProgress ? (
+    <Banner
+      accentColor={accentColor}
+      addNewRowInProgress={addNewRowInProgress}
+      borderRadius={borderRadius}
+      boxShadow={boxShadow}
+      onAddNewRowAction={onAddNewRowAction}
+    />
   ) : (
-    <Actions {...ActionProps} />
+    <Actions
+      accentColor={accentColor}
+      borderRadius={borderRadius}
+      boxShadow={boxShadow}
+      {...ActionProps}
+    />
   );
 }
 

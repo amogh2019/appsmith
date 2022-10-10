@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import Table from "./Table";
 import {
+  AddNewRowActions,
   CompactMode,
   ReactTableColumnProps,
   ReactTableFilter,
@@ -81,13 +82,19 @@ interface ReactTableComponentProps {
   isSortable?: boolean;
   accentColor: string;
   borderRadius: string;
-  boxShadow?: string;
+  boxShadow: string;
   isEditableCellValid?: boolean;
   primaryColumnId?: string;
+  addNewRowInProgress: boolean;
+  allowAddNewRow: boolean;
+  onAddNewRow: () => void;
+  onAddNewRowAction: (type: AddNewRowActions) => void;
 }
 
 function ReactTableComponent(props: ReactTableComponentProps) {
   const {
+    addNewRowInProgress,
+    allowAddNewRow,
     applyFilter,
     columns,
     columnWidthMap,
@@ -108,6 +115,8 @@ function ReactTableComponent(props: ReactTableComponentProps) {
     isVisibleSearch,
     multiRowSelection,
     nextPageClick,
+    onAddNewRow,
+    onAddNewRowAction,
     onBulkEditDiscard,
     onBulkEditSave,
     onRowClick,
@@ -267,6 +276,8 @@ function ReactTableComponent(props: ReactTableComponentProps) {
   return (
     <Table
       accentColor={props.accentColor}
+      addNewRowInProgress={addNewRowInProgress}
+      allowAddNewRow={allowAddNewRow}
       applyFilter={applyFilter}
       borderRadius={props.borderRadius}
       boxShadow={props.boxShadow}
@@ -290,6 +301,8 @@ function ReactTableComponent(props: ReactTableComponentProps) {
       isVisibleSearch={isVisibleSearch}
       multiRowSelection={multiRowSelection}
       nextPageClick={nextPageClick}
+      onAddNewRow={onAddNewRow}
+      onAddNewRowAction={onAddNewRowAction}
       onBulkEditDiscard={onBulkEditDiscard}
       onBulkEditSave={onBulkEditSave}
       pageNo={pageNo - 1}
@@ -358,6 +371,8 @@ export default React.memo(ReactTableComponent, (prev, next) => {
     JSON.stringify(prev.columns) === JSON.stringify(next.columns) &&
     equal(prev.editableCell, next.editableCell) &&
     prev.isEditableCellValid === next.isEditableCellValid &&
-    prev.primaryColumnId === next.primaryColumnId
+    prev.primaryColumnId === next.primaryColumnId &&
+    prev.addNewRowInProgress === next.addNewRowInProgress &&
+    prev.allowAddNewRow === next.allowAddNewRow
   );
 });

@@ -16,7 +16,7 @@ import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { generateClassName } from "utils/generators";
 import { getTableFilterState } from "selectors/tableFilterSelectors";
 import { ReactComponent as FilterIcon } from "assets/icons/control/filter-icon.svg";
-import TableAction from "../TableAction";
+import ActionItem from "../ActionItem";
 
 export interface DropdownOption {
   label: string;
@@ -96,7 +96,7 @@ function TableFilters(props: TableFilterProps) {
 
   return (
     <>
-      <TableAction
+      <ActionItem
         className={className}
         icon="filter"
         selectMenu={toggleFilterPane}

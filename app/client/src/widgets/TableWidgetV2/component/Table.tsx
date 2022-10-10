@@ -21,6 +21,7 @@ import {
   TABLE_SIZES,
   CompactMode,
   CompactModeTypes,
+  AddNewRowActions,
 } from "./Constants";
 import { Colors } from "constants/Colors";
 
@@ -80,10 +81,14 @@ interface TableProps {
   delimiter: string;
   accentColor: string;
   borderRadius: string;
-  boxShadow?: string;
+  boxShadow: string;
   onBulkEditDiscard: () => void;
   onBulkEditSave: () => void;
   primaryColumnId?: string;
+  addNewRowInProgress: boolean;
+  allowAddNewRow: boolean;
+  onAddNewRow: () => void;
+  onAddNewRowAction: (type: AddNewRowActions) => void;
 }
 
 const defaultColumn = {
@@ -267,7 +272,8 @@ export function Table(props: TableProps) {
             >
               <TableHeader
                 accentColor={props.accentColor}
-                addNewRow={false}
+                addNewRowInProgress={props.addNewRowInProgress}
+                allowAddNewRow={props.allowAddNewRow}
                 applyFilter={props.applyFilter}
                 borderRadius={props.borderRadius}
                 boxShadow={props.boxShadow}
@@ -280,6 +286,8 @@ export function Table(props: TableProps) {
                 isVisiblePagination={props.isVisiblePagination}
                 isVisibleSearch={props.isVisibleSearch}
                 nextPageClick={props.nextPageClick}
+                onAddNewRow={props.onAddNewRow}
+                onAddNewRowAction={props.onAddNewRowAction}
                 pageCount={pageCount}
                 pageNo={props.pageNo}
                 pageOptions={pageOptions}
