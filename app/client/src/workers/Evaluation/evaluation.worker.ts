@@ -204,6 +204,7 @@ function eventRequestHandler({
         callbackData,
         dataTree,
         dynamicTrigger,
+        eventType,
         globalContext,
       } = requestData;
       if (!dataTreeEvaluator) {
@@ -222,6 +223,7 @@ function eventRequestHandler({
         callbackData,
         {
           globalContext,
+          eventType,
         },
       );
 
