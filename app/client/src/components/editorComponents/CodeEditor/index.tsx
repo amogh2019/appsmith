@@ -101,7 +101,6 @@ import { interactionAnalyticsEvent } from "utils/AppsmithUtils";
 import { AdditionalDynamicDataTree } from "utils/autocomplete/customTreeTypeDefCreator";
 import { updateCustomDef } from "utils/autocomplete/customDefUtils";
 import { getEntityLintErrors } from "selectors/lintingSelectors";
-import { APP_MODE } from "entities/App";
 
 type ReduxStateProps = ReturnType<typeof mapStateToProps>;
 type ReduxDispatchProps = ReturnType<typeof mapDispatchToProps>;
