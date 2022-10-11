@@ -37,7 +37,11 @@ export type RenderDefaultPropsType = BaseCellComponentProps & {
   tableWidth: number;
   isCellEditable: boolean;
   isCellEditMode?: boolean;
-  onCellTextChange: (value: EditableCell["value"], inputValue: string) => void;
+  onCellTextChange: (
+    value: EditableCell["value"],
+    inputValue: string,
+    alias: string,
+  ) => void;
   toggleCellEditMode: (
     enable: boolean,
     rowIndex: number,
@@ -112,7 +116,8 @@ function PlainTextCell(props: RenderDefaultPropsType & editPropertyType) {
 
   const editEvents = useMemo(
     () => ({
-      onChange: onCellTextChange,
+      onChange: (value: EditableCell["value"], inputValue: string) =>
+        onCellTextChange(value, inputValue, alias),
       onDiscard: () =>
         toggleCellEditMode(
           false,

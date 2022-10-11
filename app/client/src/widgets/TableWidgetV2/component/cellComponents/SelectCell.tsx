@@ -41,6 +41,7 @@ const StyledCellWrapper = styled(CellWrapper)`
 type SelectProps = {
   alias: string;
   accentColor: string;
+  autoOpen: boolean;
   compactMode: string;
   columnType: string;
   borderRadius: string;
@@ -101,6 +102,7 @@ export const SelectCell = (props: SelectProps) => {
     accentColor,
     alias,
     allowCellWrapping,
+    autoOpen,
     borderRadius,
     cellBackground,
     columnType,
@@ -200,7 +202,7 @@ export const SelectCell = (props: SelectProps) => {
           hideCancelIcon
           isFilterable={isFilterable}
           isLoading={false}
-          isOpen
+          isOpen={autoOpen}
           isValid
           labelText=""
           onClose={onClose}

@@ -7,6 +7,8 @@ import { InputTypes } from "widgets/BaseInputWidget/constants";
 import { EditableCell } from "widgets/TableWidgetV2/constants";
 import { TABLE_SIZES, VerticalAlignment } from "../Constants";
 
+const FOCUS_CLASS = "has-focus";
+
 const Wrapper = styled.div<{
   accentColor: string;
   compactMode: string;
@@ -16,9 +18,8 @@ const Wrapper = styled.div<{
   isEditableCellValid: boolean;
 }>`
   padding: 1px;
-  border: 1px solid
-    ${(props) =>
-      props.isEditableCellValid ? props.accentColor : Colors.DANGER_SOLID};
+  ${(props) =>
+    !props.isEditableCellValid && `border: 1px solid ${Colors.DANGER_SOLID}`}
   background: #fff;
   position: absolute;
   width: 100%;
@@ -73,6 +74,11 @@ const Wrapper = styled.div<{
       box-shadow: none !important;
     }
   }
+
+  &.${FOCUS_CLASS} {
+    ${(props) =>
+      props.isEditableCellValid && `border: 1px solid ${props.accentColor}`}
+  }
 `;
 
 type InlineEditorPropsType = {
@@ -109,10 +115,19 @@ export function InlineCellEditor({
   widgetId,
 }: InlineEditorPropsType) {
   const inputRef = useRef<HTMLTextAreaElement | HTMLInputElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const [cursorPos, setCursorPos] = useState(value.length);
-  const onFocusChange = useCallback((focus: boolean) => !focus && onSave(), [
-    onSave,
-  ]);
+  const onFocusChange = useCallback(
+    (focus: boolean) => {
+      if (focus) {
+        wrapperRef.current?.classList.add(FOCUS_CLASS);
+      } else {
+        onSave();
+        wrapperRef.current?.classList.remove(FOCUS_CLASS);
+      }
+    },
+    [onSave],
+  );
 
   const onKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -174,10 +189,11 @@ export function InlineCellEditor({
     <Wrapper
       accentColor={accentColor}
       allowCellWrapping={allowCellWrapping}
-      className={`t--inlined-cell-editor ${!isEditableCellValid &&
+      className={`${FOCUS_CLASS} t--inlined-cell-editor ${!isEditableCellValid &&
         "t--inlined-cell-editor-has-error"}`}
       compactMode={compactMode}
       isEditableCellValid={isEditableCellValid}
+      ref={wrapperRef}
       textSize={textSize}
       verticalAlignment={verticalAlignment}
     >
