@@ -92,6 +92,7 @@ type SelectProps = {
   resetFilterTextOnClose?: boolean;
   onOptionSelectActionString?: string;
   onFilterChangeActionString?: string;
+  disabledEditIconMessage: string;
 };
 
 /*
@@ -108,6 +109,7 @@ export const SelectCell = (props: SelectProps) => {
     columnType,
     compactMode,
     disabledEditIcon,
+    disabledEditIconMessage,
     filterText,
     fontStyle,
     hasUnsavedChanges,
@@ -230,6 +232,7 @@ export const SelectCell = (props: SelectProps) => {
         columnType={columnType}
         compactMode={compactMode}
         disabledEditIcon={disabledEditIcon}
+        disabledEditIconMessage={disabledEditIconMessage}
         fontStyle={fontStyle}
         hasUnsavedChanges={hasUnsavedChanges}
         horizontalAlignment={horizontalAlignment}

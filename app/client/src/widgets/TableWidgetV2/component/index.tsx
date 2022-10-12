@@ -89,12 +89,16 @@ interface ReactTableComponentProps {
   allowAddNewRow: boolean;
   onAddNewRow: () => void;
   onAddNewRowAction: (type: AddNewRowActions) => void;
+  allowRowSelection: boolean;
+  allowSorting: boolean;
 }
 
 function ReactTableComponent(props: ReactTableComponentProps) {
   const {
     addNewRowInProgress,
     allowAddNewRow,
+    allowRowSelection,
+    allowSorting,
     applyFilter,
     columns,
     columnWidthMap,
@@ -234,16 +238,18 @@ function ReactTableComponent(props: ReactTableComponentProps) {
   }, [props.columns.map((column) => column.alias).toString()]);
 
   const sortTableColumn = (columnIndex: number, asc: boolean) => {
-    if (columnIndex === -1) {
-      _sortTableColumn("", asc);
-    } else {
-      const column = columns[columnIndex];
-      const columnType = column.metaProperties?.type || ColumnTypes.TEXT;
-      if (
-        columnType !== ColumnTypes.IMAGE &&
-        columnType !== ColumnTypes.VIDEO
-      ) {
-        _sortTableColumn(column.alias, asc);
+    if (allowSorting) {
+      if (columnIndex === -1) {
+        _sortTableColumn("", asc);
+      } else {
+        const column = columns[columnIndex];
+        const columnType = column.metaProperties?.type || ColumnTypes.TEXT;
+        if (
+          columnType !== ColumnTypes.IMAGE &&
+          columnType !== ColumnTypes.VIDEO
+        ) {
+          _sortTableColumn(column.alias, asc);
+        }
       }
     }
   };
@@ -252,17 +258,21 @@ function ReactTableComponent(props: ReactTableComponentProps) {
     original: Record<string, unknown>;
     index: number;
   }) => {
-    onRowClick(row.original, row.index);
+    if (allowRowSelection) {
+      onRowClick(row.original, row.index);
+    }
   };
 
   const toggleAllRowSelect = (
     isSelect: boolean,
     pageData: Row<Record<string, unknown>>[],
   ) => {
-    if (isSelect) {
-      selectAllRow(pageData);
-    } else {
-      unSelectAllRow(pageData);
+    if (allowRowSelection) {
+      if (isSelect) {
+        selectAllRow(pageData);
+      } else {
+        unSelectAllRow(pageData);
+      }
     }
   };
 
@@ -373,6 +383,8 @@ export default React.memo(ReactTableComponent, (prev, next) => {
     prev.isEditableCellValid === next.isEditableCellValid &&
     prev.primaryColumnId === next.primaryColumnId &&
     prev.addNewRowInProgress === next.addNewRowInProgress &&
-    prev.allowAddNewRow === next.allowAddNewRow
+    prev.allowAddNewRow === next.allowAddNewRow &&
+    prev.allowRowSelection === next.allowRowSelection &&
+    prev.allowSorting === next.allowSorting
   );
 });

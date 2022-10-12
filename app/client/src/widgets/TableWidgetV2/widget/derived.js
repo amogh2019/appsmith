@@ -489,7 +489,7 @@ export default {
       .filter((column) => !column.isVisible)
       .map((column) => column.alias);
 
-    let finalTableData = sortedTableData.filter((row) => {
+    const finalTableData = sortedTableData.filter((row) => {
       let isSearchKeyFound = true;
 
       if (searchKey) {
@@ -544,10 +544,6 @@ export default {
 
       return isSatisfyingFilters;
     });
-
-    if (props.addNewRowInProgress) {
-      finalTableData = [props.newRow, ...finalTableData];
-    }
 
     return finalTableData;
   },

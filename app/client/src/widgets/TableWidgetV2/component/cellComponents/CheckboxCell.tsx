@@ -60,6 +60,7 @@ type CheckboxCellProps = BaseCellComponentProps & {
   hasUnSavedChanges?: boolean;
   disabledCheckbox: boolean;
   isCellEditable: boolean;
+  disabledCheckboxMessage: string;
 };
 
 export const CheckboxCell = (props: CheckboxCellProps) => {
@@ -69,6 +70,7 @@ export const CheckboxCell = (props: CheckboxCellProps) => {
     cellBackground,
     compactMode,
     disabledCheckbox,
+    disabledCheckboxMessage,
     hasUnSavedChanges,
     horizontalAlignment,
     isCellEditable,
@@ -108,7 +110,7 @@ export const CheckboxCell = (props: CheckboxCellProps) => {
           autoFocus={false}
           content={
             <TooltipContentWrapper>
-              Save or discard the unsaved row to start editing here
+              {disabledCheckboxMessage}
             </TooltipContentWrapper>
           }
           hoverOpenDelay={200}

@@ -60,6 +60,7 @@ type SwitchCellProps = BaseCellComponentProps & {
   disabledSwitch: boolean;
   isCellEditable: boolean;
   hasUnSavedChanges?: boolean;
+  disabledSwitchMessage: string;
 };
 
 export const SwitchCell = (props: SwitchCellProps) => {
@@ -68,6 +69,7 @@ export const SwitchCell = (props: SwitchCellProps) => {
     cellBackground,
     compactMode,
     disabledSwitch,
+    disabledSwitchMessage,
     hasUnSavedChanges,
     horizontalAlignment,
     isCellEditable,
@@ -107,7 +109,7 @@ export const SwitchCell = (props: SwitchCellProps) => {
           autoFocus={false}
           content={
             <TooltipContentWrapper>
-              Save or discard the unsaved row to start editing here
+              {disabledSwitchMessage}
             </TooltipContentWrapper>
           }
           hoverOpenDelay={200}

@@ -122,7 +122,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
       columnEditableCellValue: {},
       selectColumnFilterText: {},
       addNewRowInProgress: false,
-      newRow: {},
+      newRow: undefined,
     };
   }
 
@@ -829,12 +829,18 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
       componentWidth,
     } = this.getPaddingAdjustedDimensions();
 
+    if (this.props.addNewRowInProgress) {
+      transformedData.unshift(this.props.newRow);
+    }
+
     return (
       <Suspense fallback={<Skeleton />}>
         <ReactTableComponent
           accentColor={this.props.accentColor}
           addNewRowInProgress={this.props.addNewRowInProgress}
           allowAddNewRow={this.props.allowAddNewRow}
+          allowRowSelection={!this.props.addNewRowInProgress}
+          allowSorting={!this.props.addNewRowInProgress}
           applyFilter={this.updateFilters}
           borderRadius={this.props.borderRadius}
           boxShadow={this.props.boxShadow}
@@ -856,7 +862,9 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
           isVisibleFilters={isVisibleFilters}
           isVisiblePagination={isVisiblePagination}
           isVisibleSearch={isVisibleSearch}
-          multiRowSelection={this.props.multiRowSelection}
+          multiRowSelection={
+            this.props.multiRowSelection && !this.props.addNewRowInProgress
+          }
           nextPageClick={this.handleNextPageClick}
           onAddNewRow={this.handleAddNewRowClick}
           onAddNewRowAction={this.handleAddNewRowAction}
@@ -1022,6 +1030,10 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
   };
 
   handleRowClick = (row: Record<string, unknown>, selectedIndex: number) => {
+    if (this.props.addNewRowInProgress) {
+      return;
+    }
+
     const {
       multiRowSelection,
       selectedRowIndex,
@@ -1194,7 +1206,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
     });
   };
 
-  removeRowFromTransientTableData = (__original_index__: string) => {
+  removeRowFromTransientTableData = (__original_index__: number) => {
     const newTransientTableData = clone(this.props.transientTableData);
 
     if (newTransientTableData) {
@@ -1263,9 +1275,17 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
       compactMode = CompactModeTypes.DEFAULT,
     } = this.props;
 
-    const rowIndex: number = props.cell.row.index;
-    const row = filteredTableData[rowIndex];
-    const originalIndex = row[ORIGINAL_INDEX_KEY] ?? rowIndex;
+    const rowIndex = props.cell.row.index;
+    let row;
+    let originalIndex: number;
+
+    if (this.props.addNewRowInProgress) {
+      row = filteredTableData[rowIndex - 1];
+      originalIndex = rowIndex === 0 ? -1 : row[ORIGINAL_INDEX_KEY] ?? rowIndex;
+    } else {
+      row = filteredTableData[rowIndex];
+      originalIndex = row[ORIGINAL_INDEX_KEY] ?? rowIndex;
+    }
 
     // cellProperties order or size does not change when filter/sorting/grouping is applied
     // on the data thus original index is needed to identify the column's cell property.
@@ -1305,6 +1325,10 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
         InlineEditingSaveOptions.ROW_LEVEL &&
       this.props.updatedRowIndices.length &&
       this.props.updatedRowIndices.indexOf(originalIndex) === -1;
+
+    const disabledEditMessage = `Save or discard the ${
+      this.props.addNewRowInProgress ? "newly added" : "unsaved"
+    } row to start editing here`;
 
     switch (column.columnType) {
       case ColumnTypes.BUTTON:
@@ -1434,6 +1458,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
             disabledEditIcon={
               shouldDisableEdit || this.props.addNewRowInProgress
             }
+            disabledEditIconMessage={disabledEditMessage}
             filterText={
               this.props.selectColumnFilterText?.[
                 this.props.editableCell?.column || column.alias
@@ -1613,38 +1638,22 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
             disabledCheckbox={
               shouldDisableEdit || (this.props.addNewRowInProgress && !isNewRow)
             }
+            disabledCheckboxMessage={disabledEditMessage}
             hasUnSavedChanges={cellProperties.hasUnsavedChanges}
             horizontalAlignment={cellProperties.horizontalAlignment}
             isCellEditable={isCellEditable}
             isCellVisible={cellProperties.isCellVisible ?? true}
             isHidden={isHidden}
-            onChange={() => {
-              const row = props.cell.row.values;
-              const cellValue = !props.cell.value;
-
-              if (this.props.addNewRowInProgress) {
-                this.props.updateWidgetMetaProperty("newRow", {
-                  ...this.props.newRow,
-                  [alias]: cellValue,
-                });
-              } else {
-                this.updateTransientTableData({
-                  __original_index__: originalIndex,
-                  [alias]: cellValue,
-                });
-
-                this.onColumnEvent({
-                  rowIndex,
-                  action: column.onCheckChange,
-                  triggerPropertyName: "onCheckChange",
-                  eventType: EventType.ON_CHECK_CHANGE,
-                  row: {
-                    ...row,
-                    [alias]: cellValue,
-                  },
-                });
-              }
-            }}
+            onChange={() =>
+              this.onCheckChange(
+                column,
+                props.cell.row.values,
+                !props.cell.value,
+                alias,
+                originalIndex,
+                rowIndex,
+              )
+            }
             value={props.cell.value}
             verticalAlignment={cellProperties.verticalAlignment}
           />
@@ -1659,38 +1668,22 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
             disabledSwitch={
               shouldDisableEdit || (this.props.addNewRowInProgress && !isNewRow)
             }
+            disabledSwitchMessage={disabledEditMessage}
             hasUnSavedChanges={cellProperties.hasUnsavedChanges}
             horizontalAlignment={cellProperties.horizontalAlignment}
             isCellEditable={isCellEditable}
             isCellVisible={cellProperties.isCellVisible ?? true}
             isHidden={isHidden}
-            onChange={() => {
-              const row = props.cell.row.values;
-              const cellValue = !props.cell.value;
-
-              if (this.props.addNewRowInProgress) {
-                this.props.updateWidgetMetaProperty("newRow", {
-                  ...this.props.newRow,
-                  [alias]: cellValue,
-                });
-              } else {
-                this.updateTransientTableData({
-                  __original_index__: originalIndex,
-                  [alias]: cellValue,
-                });
-
-                this.onColumnEvent({
-                  rowIndex,
-                  action: column.onCheckChange,
-                  triggerPropertyName: "onCheckChange",
-                  eventType: EventType.ON_CHECK_CHANGE,
-                  row: {
-                    ...row,
-                    [alias]: cellValue,
-                  },
-                });
-              }
-            }}
+            onChange={() =>
+              this.onCheckChange(
+                column,
+                props.cell.row.values,
+                !props.cell.value,
+                alias,
+                originalIndex,
+                rowIndex,
+              )
+            }
             value={props.cell.value}
             verticalAlignment={cellProperties.verticalAlignment}
           />
@@ -1722,6 +1715,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
             columnType={column.columnType}
             compactMode={compactMode}
             disabledEditIcon={shouldDisableEdit}
+            disabledEditIconMessage={disabledEditMessage}
             displayText={cellProperties.displayText}
             fontStyle={cellProperties.fontStyle}
             hasUnsavedChanges={cellProperties.hasUnsavedChanges}
@@ -1731,7 +1725,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
             isCellVisible={cellProperties.isCellVisible ?? true}
             isEditableCellValid={this.props.isEditableCellValid}
             isHidden={isHidden}
-            onCellTextChange={this.onEditableCellTextChange}
+            onCellTextChange={this.onCellTextChange}
             onSubmitString={props.cell.column.columnProperties.onSubmit}
             rowIndex={rowIndex}
             tableWidth={this.getComponentDimensions().componentWidth}
@@ -1747,7 +1741,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
     }
   };
 
-  onEditableCellTextChange = (
+  onCellTextChange = (
     value: EditableCell["value"],
     inputValue: string,
     alias: string,
@@ -1935,14 +1929,80 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
     }
   };
 
+  onCheckChange = (
+    column: any,
+    row: Record<string, unknown>,
+    value: boolean,
+    alias: string,
+    originalIndex: number,
+    rowIndex: number,
+  ) => {
+    if (this.props.addNewRowInProgress) {
+      this.props.updateWidgetMetaProperty("newRow", {
+        ...this.props.newRow,
+        [alias]: value,
+      });
+    } else {
+      this.updateTransientTableData({
+        __original_index__: originalIndex,
+        [alias]: value,
+      });
+
+      this.onColumnEvent({
+        rowIndex,
+        action: column.onCheckChange,
+        triggerPropertyName: "onCheckChange",
+        eventType: EventType.ON_CHECK_CHANGE,
+        row: {
+          ...row,
+          [alias]: value,
+        },
+      });
+    }
+  };
+
   handleAddNewRowClick = () => {
     this.props.updateWidgetMetaProperty("addNewRowInProgress", true);
     this.props.updateWidgetMetaProperty("newRow", this.props.defaultNewRow);
+
+    // New row gets added at the top of page 1
     this.props.updateWidgetMetaProperty("pageNo", 1);
+
+    //Since we're adding a newRow thats not part of tableData, the index changes
+    // so we're resetting the row selection
+    this.props.updateWidgetMetaProperty("selectedRowIndex", -1);
+    this.props.updateWidgetMetaProperty("selectedRowIndices", []);
   };
 
   handleAddNewRowAction = (type: AddNewRowActions) => {
-    this.props.updateWidgetMetaProperty("addNewRowInProgress", false);
+    let triggerPropertyName, action, eventType;
+
+    const newRow = this.props.newRow;
+
+    const onComplete = () => {
+      this.props.updateWidgetMetaProperty("addNewRowInProgress", false);
+      this.props.updateWidgetMetaProperty("newRow", undefined);
+    };
+
+    if (type === AddNewRowActions.SAVE) {
+      triggerPropertyName = "onAddNewRowSave";
+      action = this.props.onAddNewRowSave;
+      eventType = EventType.ON_ADD_ROW_SAVE;
+    } else {
+      triggerPropertyName = "onAddNewRowDiscard";
+      action = this.props.onAddNewRowDiscard;
+      eventType = EventType.ON_ADD_ROW_DISCARD;
+    }
+
+    super.executeAction({
+      triggerPropertyName: triggerPropertyName,
+      dynamicString: action,
+      event: {
+        type: eventType,
+        callback: onComplete,
+      },
+      globalContext: { newRow },
+    });
   };
 }
 

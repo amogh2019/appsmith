@@ -51,7 +51,7 @@ export function AddNewRowBanner(props: AddNewRowBannerType) {
           boxShadow={props.boxShadow}
           buttonColor={props.accentColor}
           buttonVariant={ButtonVariantTypes.PRIMARY}
-          onClick={() => props.onAddNewRowAction(AddNewRowActions.DISCARD)}
+          onClick={() => props.onAddNewRowAction(AddNewRowActions.SAVE)}
           text="Save row"
         />
       </ActionContainer>

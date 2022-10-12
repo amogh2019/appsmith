@@ -56,6 +56,7 @@ export type RenderDefaultPropsType = BaseCellComponentProps & {
   isEditableCellValid: boolean;
   validationErrorMessage: string;
   widgetId: string;
+  disabledEditIconMessage: string;
 };
 
 type editPropertyType = {
@@ -91,6 +92,7 @@ function PlainTextCell(props: RenderDefaultPropsType & editPropertyType) {
     columnType,
     compactMode,
     disabledEditIcon,
+    disabledEditIconMessage,
     displayText,
     fontStyle,
     hasUnsavedChanges,
@@ -201,6 +203,7 @@ function PlainTextCell(props: RenderDefaultPropsType & editPropertyType) {
         columnType={columnType}
         compactMode={compactMode}
         disabledEditIcon={disabledEditIcon}
+        disabledEditIconMessage={disabledEditIconMessage}
         fontStyle={fontStyle}
         hasUnsavedChanges={hasUnsavedChanges}
         horizontalAlignment={horizontalAlignment}
