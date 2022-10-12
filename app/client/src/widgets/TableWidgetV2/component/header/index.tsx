@@ -1,8 +1,8 @@
 import React from "react";
-import Actions, { ActionsProps } from "./actions";
+import Actions, { ActionsPropsType } from "./actions";
 import { Banner, BannerPropType } from "./banner";
 
-function TableHeader(props: ActionsProps & BannerPropType) {
+function TableHeader(props: ActionsPropsType & BannerPropType) {
   const {
     accentColor,
     addNewRowInProgress,

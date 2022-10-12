@@ -19,7 +19,6 @@ import { Colors } from "constants/Colors";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { PageNumberInput } from "./PageNumberInput";
 import ActionItem from "./ActionItem";
-import { noop } from "lodash";
 
 const SearchComponentWrapper = styled.div<{
   borderRadius: string;
@@ -40,7 +39,7 @@ const SearchComponentWrapper = styled.div<{
   }
 `;
 
-export interface ActionsProps {
+export interface ActionsPropsType {
   updatePageNo: (pageNo: number, event?: EventType) => void;
   nextPageClick: () => void;
   prevPageClick: () => void;
@@ -73,7 +72,7 @@ export interface ActionsProps {
   onAddNewRow: () => void;
 }
 
-function Actions(props: ActionsProps) {
+function Actions(props: ActionsPropsType) {
   return (
     <>
       {props.isVisibleSearch && (

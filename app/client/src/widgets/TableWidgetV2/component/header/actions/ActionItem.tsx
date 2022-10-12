@@ -31,7 +31,7 @@ export const TableIconWrapper = styled.div<{
   }
 `;
 
-interface TableActionProps {
+interface ActionItemProps {
   selected?: boolean;
   selectMenu: (selected: boolean) => void;
   className: string;
@@ -41,7 +41,7 @@ interface TableActionProps {
   width?: number;
 }
 
-function ActionItem(props: TableActionProps) {
+function ActionItem(props: ActionItemProps) {
   const handleIconClick = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
       props.selectMenu(!props.selected);

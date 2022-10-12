@@ -1030,10 +1030,6 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
   };
 
   handleRowClick = (row: Record<string, unknown>, selectedIndex: number) => {
-    if (this.props.addNewRowInProgress) {
-      return;
-    }
-
     const {
       multiRowSelection,
       selectedRowIndex,
@@ -1987,11 +1983,11 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
     if (type === AddNewRowActions.SAVE) {
       triggerPropertyName = "onAddNewRowSave";
       action = this.props.onAddNewRowSave;
-      eventType = EventType.ON_ADD_ROW_SAVE;
+      eventType = EventType.ON_ADD_NEW_ROW_SAVE;
     } else {
       triggerPropertyName = "onAddNewRowDiscard";
       action = this.props.onAddNewRowDiscard;
-      eventType = EventType.ON_ADD_ROW_DISCARD;
+      eventType = EventType.ON_ADD_NEW_ROW_DISCARD;
     }
 
     super.executeAction({
